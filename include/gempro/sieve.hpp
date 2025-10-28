@@ -41,6 +41,22 @@ class Sieve {
 		}
 		return divs;
 	}
+	/**
+	 * Returns a list of pairs in the form {p, k}, where p is a prime factor of
+	 * n and k is the exponent of p in the prime factorization of n.
+	 */
+	std::vector<std::pair<int, int>> getPrimeFactorization(int n) {
+		std::vector<std::pair<int, int>> divs;
+		while (n > 1) {
+			if (divs.size() && divs.back().first == spf[n]) {
+				divs.back().second++;
+			} else {
+				divs.emplace_back(spf[n], 1);
+			}
+			n /= spf[n];
+		}
+		return divs;
+	}
 
   private:
 	std::vector<int> primes;
