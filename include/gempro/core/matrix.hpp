@@ -2,6 +2,7 @@
 #define _GEMPRO_CORE_MATRIX_HPP_
 
 #include <cassert>
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 
@@ -43,6 +44,33 @@ template <class S> class Matrix {
 
     int rows() const { return n; }
     int cols() const { return m; }
+
+    std::vector<S> row(int r) const {
+        assert(0 <= r && r < n);
+        const size_t begin = static_cast<size_t>(r) * static_cast<size_t>(m);
+        return std::vector<S>(data.begin() + static_cast<std::ptrdiff_t>(begin),
+                              data.begin() + static_cast<std::ptrdiff_t>(begin + m));
+    }
+
+    std::vector<S> col(int c) const {
+        assert(0 <= c && c < m);
+        std::vector<S> out(static_cast<size_t>(n));
+        for (int r = 0; r < n; r++) {
+            out[static_cast<size_t>(r)] =
+                data[static_cast<size_t>(r) * static_cast<size_t>(m) + static_cast<size_t>(c)];
+        }
+        return out;
+    }
+
+    Matrix transpose() const {
+        Matrix out(m, n, S{});
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                out(j, i) = (*this)(i, j);
+            }
+        }
+        return out;
+    }
 
     S &operator()(int r, int c) {
         assert(0 <= r && r < n);
